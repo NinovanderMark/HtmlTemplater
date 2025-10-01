@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
-namespace HtmlTemplater.Parser
+namespace HtmlTemplater.Parsing
 {
     public class AgilityParser(ILogger<AgilityParser> _logger)
     {

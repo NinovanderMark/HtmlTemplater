@@ -1,5 +1,5 @@
 ﻿using HtmlTemplater.Domain;
-using HtmlTemplater.Parser;
+using HtmlTemplater.Parsing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
