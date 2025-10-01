@@ -1,4 +1,4 @@
-Html Templater v1
+# Html Templater v1
 - Define custom HTML elements in separate component file
 - InnerHtml should be replaced with all HTML contained in the parent element
 - Proper HTML elements can be redefined to be custom elements

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HtmlTemplater.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\..\\..\\..\\htmt\\manifest.json"
+    }
+  }
+}

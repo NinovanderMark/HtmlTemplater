@@ -1,5 +1,6 @@
 {
     "elements": [
         "page"
-    ]
+    ],
+	"outputPath": "../docs"
 }

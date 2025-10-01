@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="System.ServiceModel.Primitives" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HtmlTemplater.Domain\HtmlTemplater.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
