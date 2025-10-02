@@ -80,6 +80,7 @@ namespace HtmlTemplater.CLI
             var serializerOptions = new JsonSerializerOptions()
             {
                 IncludeFields = true,
+                PropertyNameCaseInsensitive = true,
                 TypeInfoResolver = SourceGenerationContext.Default
             };
 
@@ -93,8 +94,25 @@ namespace HtmlTemplater.CLI
             string outputPath = Path.Combine(rootFolder, "out");
             if ( !string.IsNullOrWhiteSpace(manifest.OutputPath) )
             {
-                outputPath = Path.Combine(Environment.CurrentDirectory, manifest.OutputPath);
+                outputPath = Path.Combine(rootFolder, manifest.OutputPath);
             }
+
+            if ( !Directory.Exists(outputPath) )
+            {
+                logger.LogInformation("Creating output directory at {OutputPath}", outputPath);
+                Directory.CreateDirectory(outputPath);
+            }
+
+            string assetsSource = Path.Combine(rootFolder, "assets");
+            string assetsDestination = Path.Combine(outputPath, "assets");
+            if (!string.IsNullOrWhiteSpace(manifest.AssetFolder))
+            {
+                assetsSource = Path.Combine(rootFolder, manifest.AssetFolder);
+                assetsDestination = Path.Combine(outputPath, manifest.AssetFolder);
+            }
+
+            logger.LogInformation("Copying assets to {AssetFolder}", assetsDestination);
+            CopyDirectory(assetsSource, assetsDestination, recursive: true);
 
             var elements = new List<Element>();
             var elementFolder = Path.Combine(rootFolder, "elements");
@@ -122,18 +140,61 @@ namespace HtmlTemplater.CLI
 
             var parser = services.GetRequiredService<AgilityParser>();
             parser.AddElements(elements);
-            var parseTasks = new List<Task>();
+            var parseTasks = new List<Task<Page>>();
 
-            logger.LogInformation("Parsing and writing HTML to {OutputPath}", outputPath);
+            logger.LogInformation("Parsing {PageCount} pages using {ElementCount} known elements", pages.Count, elements.Count);
             foreach (var page in pages)
             {
-                parseTasks.Add(parser.ParsePage(page, outputPath));
+                parseTasks.Add(parser.ParsePage(page));
             }
 
             await Task.WhenAll(parseTasks);
+
+            logger.LogInformation("Writing parsed pages to {OutputPath}", outputPath);
+            foreach (var task in parseTasks)
+            {
+                var page = await task;
+                var relativePath = Path.GetRelativePath(pagesFolder, page.Path);
+                var pageOutputPath = Path.ChangeExtension(Path.Combine(outputPath, relativePath), ".html");
+                await File.WriteAllTextAsync(pageOutputPath, page.Content);
+            }
+
             logger.LogInformation("Operation completed");
 
             return 0;
+        }
+
+        static void CopyDirectory(string sourceDir, string destinationDir, bool recursive)
+        {
+            // Get information about the source directory
+            var dir = new DirectoryInfo(sourceDir);
+
+            // Check if the source directory exists
+            if (!dir.Exists)
+                throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+
+            // Cache directories before we start copying
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            // Create the destination directory
+            Directory.CreateDirectory(destinationDir);
+
+            // Get the files in the source directory and copy to the destination directory
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                string targetFilePath = Path.Combine(destinationDir, file.Name);
+                file.CopyTo(targetFilePath);
+            }
+
+            // If recursive and copying subdirectories, recursively call this method
+            if (recursive)
+            {
+                foreach (DirectoryInfo subDir in dirs)
+                {
+                    string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                    CopyDirectory(subDir.FullName, newDestinationDir, true);
+                }
+            }
         }
     }
 }
