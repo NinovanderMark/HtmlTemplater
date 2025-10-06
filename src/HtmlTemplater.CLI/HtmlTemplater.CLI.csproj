@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HtmlTemplater.Domain\HtmlTemplater.Domain.csproj" />
-    <ProjectReference Include="..\HtmlTemplater.Parsing\HtmlTemplater.Parsing.csproj" />
+    <ProjectReference Include="..\HtmlTemplater.Parsing.Agility\HtmlTemplater.Parsing.Agility.csproj" />
   </ItemGroup>
 
 </Project>

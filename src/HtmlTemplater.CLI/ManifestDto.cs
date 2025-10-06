@@ -4,6 +4,12 @@
     {
         public List<string> Elements { get; init; } = [];
         public string? OutputPath { get; init; }
-        public string? AssetFolder { get; init; }
+        public AssetsDto? Assets { get; init; }
+    }
+
+    public record AssetsDto
+    {
+        public string? Input { get; init; }
+        public string? Output { get; init; }
     }
 }

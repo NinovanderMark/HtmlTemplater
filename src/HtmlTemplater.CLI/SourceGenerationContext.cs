@@ -9,6 +9,7 @@ namespace HtmlTemplater.CLI
 {
     [JsonSourceGenerationOptions(WriteIndented = false)]
     [JsonSerializable(typeof(ManifestDto))]
+    [JsonSerializable(typeof(AssetsDto))]
     public partial class SourceGenerationContext : JsonSerializerContext
     {
     }

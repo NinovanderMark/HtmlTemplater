@@ -3,5 +3,8 @@
         "page"
     ],
 	"outputPath": "../docs",
-	"assetFolder": "assets"
+	"assets": {
+		"input": "assets",
+		"output": "assets"
+	}
 }
