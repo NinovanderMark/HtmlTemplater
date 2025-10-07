@@ -1,5 +1,6 @@
-﻿using HtmlTemplater.Domain;
-using HtmlTemplater.Parsing;
+﻿using HtmlTemplater.Domain.Interfaces;
+using HtmlTemplater.Domain.Models;
+using HtmlTemplater.Parsing.Agility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -64,7 +65,7 @@ namespace HtmlTemplater.CLI
                     o.SingleLine = true;
                     o.TimestampFormat = "[HH:mm:ss] ";
                 }))
-                .AddTransient<AgilityParser>()
+                .AddAgilityParser()
                 .BuildServiceProvider();
 
         private static async Task<int> Run(IServiceProvider services, string manifestPath)
@@ -104,25 +105,29 @@ namespace HtmlTemplater.CLI
             }
 
             string assetsSource = Path.Combine(rootFolder, "assets");
-            string assetsDestination = Path.Combine(outputPath, "assets");
-            if (!string.IsNullOrWhiteSpace(manifest.AssetFolder))
+            if (!string.IsNullOrWhiteSpace(manifest.Assets?.Input))
             {
-                assetsSource = Path.Combine(rootFolder, manifest.AssetFolder);
-                assetsDestination = Path.Combine(outputPath, manifest.AssetFolder);
+                assetsSource = Path.Combine(rootFolder, manifest.Assets.Input);
+            }
+
+            string assetsDestination = Path.Combine(outputPath, "assets");
+            if (!string.IsNullOrWhiteSpace(manifest.Assets?.Output))
+            {
+                assetsDestination = Path.Combine(outputPath, manifest.Assets.Output);
             }
 
             logger.LogInformation("Copying assets to {AssetFolder}", assetsDestination);
             CopyDirectory(assetsSource, assetsDestination, recursive: true);
 
-            var elements = new List<Element>();
             var elementFolder = Path.Combine(rootFolder, "elements");
 
+            var parser = services.GetRequiredService<IParser>();
             logger.LogInformation("Reading elements from {ElementFolder}", elementFolder);
             foreach (var e in manifest.Elements ?? [])
             {
                 var elementFile = Path.Combine(elementFolder, $"{e}.htmt");
                 var content = await File.ReadAllTextAsync(elementFile);
-                elements.Add(new Element(e, content));
+                parser.ParseElement(e, content);
             }
 
             var pagesFolder = Path.Combine(rootFolder, "pages");
@@ -138,24 +143,25 @@ namespace HtmlTemplater.CLI
                 pages.Add(page);
             }
 
-            var parser = services.GetRequiredService<AgilityParser>();
-            parser.AddElements(elements);
-            var parseTasks = new List<Task<Page>>();
+            var parsedPages = new List<Page>();
 
-            logger.LogInformation("Parsing {PageCount} pages using {ElementCount} known elements", pages.Count, elements.Count);
+            logger.LogInformation("Parsing {PageCount} pages using {ElementCount} known elements", pages.Count, parser.ElementCount);
             foreach (var page in pages)
             {
-                parseTasks.Add(parser.ParsePage(page));
+                parsedPages.Add(parser.ParsePage(page));
             }
 
-            await Task.WhenAll(parseTasks);
-
             logger.LogInformation("Writing parsed pages to {OutputPath}", outputPath);
-            foreach (var task in parseTasks)
+            foreach (var page in parsedPages)
             {
-                var page = await task;
                 var relativePath = Path.GetRelativePath(pagesFolder, page.Path);
                 var pageOutputPath = Path.ChangeExtension(Path.Combine(outputPath, relativePath), ".html");
+                if ( File.Exists(pageOutputPath) )
+                {
+                    File.Delete(pageOutputPath);
+                }
+
+                logger.LogInformation("Writing {PagePath}", pageOutputPath);
                 await File.WriteAllTextAsync(pageOutputPath, page.Content);
             }
 
@@ -183,7 +189,7 @@ namespace HtmlTemplater.CLI
             foreach (FileInfo file in dir.GetFiles())
             {
                 string targetFilePath = Path.Combine(destinationDir, file.Name);
-                file.CopyTo(targetFilePath);
+                file.CopyTo(targetFilePath, overwrite: true);
             }
 
             // If recursive and copying subdirectories, recursively call this method

@@ -5,20 +5,27 @@ VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlTemplater.CLI", "HtmlTemplater.CLI\HtmlTemplater.CLI.csproj", "{2F4C0555-F5E3-42C9-8B0A-98A26D8E1BA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlTemplater.Parsing", "HtmlTemplater.Parsing\HtmlTemplater.Parsing.csproj", "{2B034885-FED2-4D21-ABCE-35D67D1AB7F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlTemplater.Parsing.Agility", "HtmlTemplater.Parsing.Agility\HtmlTemplater.Parsing.Agility.csproj", "{2B034885-FED2-4D21-ABCE-35D67D1AB7F7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub", "GitHub", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\cd.yml = ..\.github\workflows\cd.yml
 		..\.github\workflows\ci.yml = ..\.github\workflows\ci.yml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlTemplater.Domain", "HtmlTemplater.Domain\HtmlTemplater.Domain.csproj", "{6E958CFC-1F6A-41D1-99BD-B8BBA5CB0B52}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A0AF9F6-447E-4433-BB5C-E175915137C3}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlTemplater.Domain", "HtmlTemplater.Domain\HtmlTemplater.Domain.csproj", "{6E958CFC-1F6A-41D1-99BD-B8BBA5CB0B52}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{20DD0EB7-DCBC-4712-9311-3EDC636B120E}"
+	ProjectSection(SolutionItems) = preProject
+		..\test\Directory.Packages.props = ..\test\Directory.Packages.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlTemplater.Parsing.Agility.Tests", "..\test\HtmlTemplater.Parsing.Agility.Tests\HtmlTemplater.Parsing.Agility.Tests.csproj", "{E958DED0-6C22-4D6C-94FD-E741B3ECF2AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +45,19 @@ Global
 		{6E958CFC-1F6A-41D1-99BD-B8BBA5CB0B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E958CFC-1F6A-41D1-99BD-B8BBA5CB0B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E958CFC-1F6A-41D1-99BD-B8BBA5CB0B52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E958DED0-6C22-4D6C-94FD-E741B3ECF2AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E958DED0-6C22-4D6C-94FD-E741B3ECF2AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E958DED0-6C22-4D6C-94FD-E741B3ECF2AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E958DED0-6C22-4D6C-94FD-E741B3ECF2AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2F4C0555-F5E3-42C9-8B0A-98A26D8E1BA9} = {6A0AF9F6-447E-4433-BB5C-E175915137C3}
+		{2B034885-FED2-4D21-ABCE-35D67D1AB7F7} = {6A0AF9F6-447E-4433-BB5C-E175915137C3}
+		{6E958CFC-1F6A-41D1-99BD-B8BBA5CB0B52} = {6A0AF9F6-447E-4433-BB5C-E175915137C3}
+		{E958DED0-6C22-4D6C-94FD-E741B3ECF2AE} = {20DD0EB7-DCBC-4712-9311-3EDC636B120E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A62F486A-12FE-4AAD-AA7E-F8F9AF508EB4}

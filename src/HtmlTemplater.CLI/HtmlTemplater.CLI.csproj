@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <PublishAot>true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <AssemblyName>HtmlTemplater-$(Version)</AssemblyName>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HtmlTemplater.Domain\HtmlTemplater.Domain.csproj" />
-    <ProjectReference Include="..\HtmlTemplater.Parsing\HtmlTemplater.Parsing.csproj" />
+    <ProjectReference Include="..\HtmlTemplater.Parsing.Agility\HtmlTemplater.Parsing.Agility.csproj" />
   </ItemGroup>
 
 </Project>
