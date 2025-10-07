@@ -86,7 +86,7 @@ jobs:
     needs: [ build, create-release ]
     strategy:
       matrix: 
-        target: [ linux-arm64, linux-x64, osx-arm64, osx-x64, win-x64 ]
+        target: [ linux-arm64, linux-x64 ]
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
