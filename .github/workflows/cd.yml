@@ -81,12 +81,74 @@ jobs:
             --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
             --generate-notes
   
-  build-attach-binaries:
+  build-attach-binaries-linux:
     runs-on: ubuntu-latest
     needs: [ build, create-release ]
     strategy:
       matrix: 
         target: [ linux-arm64, linux-x64, osx-arm64, osx-x64, win-x64 ]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Publish application for target
+      env:
+        target: ${{ matrix.target }}
+      run: dotnet publish -p:PublishProfile=$target
+    - name: Create archive with binaries
+      env:
+        target: ${{ matrix.target }}
+      run: |
+        cd HtmlTemplater.CLI/bin/Release/publish/$target
+        zip -r ../../../../../$target.zip *
+    - name: Upload release artifacts
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{needs.build.outputs.app-version}}
+        target: ${{ matrix.target }}
+      run: |
+        gh release upload "$tag" \
+            $target.zip
+
+  build-attach-binaries-windows:
+    runs-on: windows-latest
+    needs: [ build, create-release ]
+    strategy:
+      matrix: 
+        target: [ win-x64 ]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Publish application for target
+      env:
+        target: ${{ matrix.target }}
+      run: dotnet publish -p:PublishProfile=$target
+    - name: Create archive with binaries
+      env:
+        target: ${{ matrix.target }}
+      run: |
+        cd HtmlTemplater.CLI/bin/Release/publish/$target
+        zip -r ../../../../../$target.zip *
+    - name: Upload release artifacts
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{needs.build.outputs.app-version}}
+        target: ${{ matrix.target }}
+      run: |
+        gh release upload "$tag" \
+            $target.zip
+
+  build-attach-binaries-osx:
+    runs-on: macos-latest
+    needs: [ build, create-release ]
+    strategy:
+      matrix: 
+        target: [ osx-arm64, osx-x64 ]
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
