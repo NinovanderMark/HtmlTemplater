@@ -14,9 +14,8 @@ namespace HtmlTemplater.Parsing.Agility.Tests
         public void ReplaceInnerHtml_Happy()
         {
             // Assemble
-            var logger = NSubstitute.Substitute.For<ILogger<AgilityParser>>();
             var validator = NSubstitute.Substitute.For<IParseValidator>();
-            var parser = new AgilityParser(logger, validator);
+            var parser = new AgilityParser(validator);
 
             string pageElement = "<div>{{InnerHtml}}</div>";
             var page = new Page("index", "index.html", "<page>Test</page>");
@@ -34,9 +33,8 @@ namespace HtmlTemplater.Parsing.Agility.Tests
         public void ReplaceInnerHtml_NoInnerHtmlPlaceholder()
         {
             // Assemble
-            var logger = NSubstitute.Substitute.For<ILogger<AgilityParser>>();
             var validator = NSubstitute.Substitute.For<IParseValidator>();
-            var parser = new AgilityParser(logger, validator);
+            var parser = new AgilityParser(validator);
 
             string pageElement = "<div>{{InnerHtmt}}</div>";
             var page = new Page("index", "index.html", "<page>Test</page>");
@@ -57,9 +55,8 @@ namespace HtmlTemplater.Parsing.Agility.Tests
         public void ReplaceInnerHtml_NoInnerHtml()
         {
             // Assemble
-            var logger = NSubstitute.Substitute.For<ILogger<AgilityParser>>();
             var validator = NSubstitute.Substitute.For<IParseValidator>();
-            var parser = new AgilityParser(logger, validator);
+            var parser = new AgilityParser(validator);
 
             string pageElement = "<div>{{InnerHtml}}</div>";
             var page = new Page("index", "index.html", "<page></page>");
@@ -79,9 +76,8 @@ namespace HtmlTemplater.Parsing.Agility.Tests
         public void ReplaceInnerHtml_WithMultipleNodes_Exception()
         {
             // Assemble
-            var logger = NSubstitute.Substitute.For<ILogger<AgilityParser>>();
             var validator = NSubstitute.Substitute.For<IParseValidator>();
-            var parser = new AgilityParser(logger, validator);
+            var parser = new AgilityParser(validator);
 
             string pageElement = "<header>Hello World</header><div>{{InnerHtml}}</div>";
             var page = new Page("index", "index.html", "<page>Test</page>");
@@ -99,9 +95,8 @@ namespace HtmlTemplater.Parsing.Agility.Tests
         public void ReplaceInnerHtmlTitle_Happy()
         {
             // Assemble
-            var logger = NSubstitute.Substitute.For<ILogger<AgilityParser>>();
             var validator = NSubstitute.Substitute.For<IParseValidator>();
-            var parser = new AgilityParser(logger, validator);
+            var parser = new AgilityParser(validator);
 
             string pageElement = "<body><header>{{Title}}</header><div>{{InnerHtml}}</div></body>";
             var page = new Page("index", "index.html", "<page title=\"Hello World\">Test</page>");

@@ -3,14 +3,10 @@ using HtmlTemplater.Domain.Exceptions;
 using HtmlTemplater.Domain.Interfaces;
 using HtmlTemplater.Domain.Models;
 using HtmlTemplater.Parsing.Agility.Interfaces;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.WebSockets;
 
 namespace HtmlTemplater.Parsing.Agility.Services
 {
-    public class AgilityParser(ILogger<AgilityParser> _logger, IParseValidator _validator) : IParser
+    public class AgilityParser(IParseValidator _validator) : IParser
     {
         public int ElementCount { get => _elements.Count; } 
 

@@ -161,6 +161,7 @@ namespace HtmlTemplater.CLI
                     File.Delete(pageOutputPath);
                 }
 
+                logger.LogInformation("Writing {PagePath}", pageOutputPath);
                 await File.WriteAllTextAsync(pageOutputPath, page.Content);
             }
 
