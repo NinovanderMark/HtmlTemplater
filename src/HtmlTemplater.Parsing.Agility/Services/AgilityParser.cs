@@ -34,7 +34,8 @@ namespace HtmlTemplater.Parsing.Agility.Services
                 {
                     try
                     {
-                        ParseNode(node, page, el);
+                        var newNode = ParseNode(node, el, page);
+                        node.ParentNode.ReplaceChild(newNode, node);
                     }
                     catch (Exception ex)
                     {
@@ -46,7 +47,7 @@ namespace HtmlTemplater.Parsing.Agility.Services
             return new Page(page.Name, page.Path, document.DocumentNode.OuterHtml);
         }
 
-        public void ParseNode(HtmlNode node, Page page, Element el)
+        public HtmlNode ParseNode(HtmlNode node, Element el, Page page)
         {
             var attributes = GetAttributes(page, node);
             var placeholders = GetPlaceholders(el.Html);
@@ -55,14 +56,19 @@ namespace HtmlTemplater.Parsing.Agility.Services
                 _validator.MissingInnerHtmlPlaceholder(page.Name, node.Line, node.LinePosition, el.Name);
             }
 
-            var workNode = node;
+            var workNode = HtmlNode.CreateNode(el.Html);
             foreach (var item in placeholders)
             {
                 switch (item.Key)
                 {
                     // Special case is InnerHtml
                     case "innerhtml":
-                        workNode = ReplaceInnerHtml(item.Full, workNode, el, page);
+                        if ( string.IsNullOrEmpty(node.InnerHtml) )
+                        {
+                            _validator.MissingInnerHtml(page.Name, node.Line, node.LinePosition, el.Name);
+                        }
+
+                        workNode.InnerHtml = workNode.InnerHtml.Replace(item.Full, node.InnerHtml ?? string.Empty);
                         break;
 
                     // Default case is to use attributes on the outer node
@@ -71,12 +77,12 @@ namespace HtmlTemplater.Parsing.Agility.Services
                         if (!att.Any())
                         {
                             _validator.PlaceholderUnused(page.Name, node.Line, node.LinePosition, item.Full, el.Name);
-                            workNode = ReplaceWithValue(item, string.Empty, workNode, el, page);
+                            workNode.InnerHtml = workNode.InnerHtml.Replace(item.Full, string.Empty);
                             break;
                         }
 
                         var attribute = att.First();
-                        workNode = ReplaceWithValue(item, attribute.Value, workNode, el, page);
+                        workNode.InnerHtml = workNode.InnerHtml.Replace(item.Full, attribute.Value);
                         attribute.Used = true;
                         break;
                 }
@@ -90,6 +96,8 @@ namespace HtmlTemplater.Parsing.Agility.Services
                     workNode.Attributes.Add(att.Original); // Add original attribute back to the node
                 }
             }
+
+            return workNode;
         }
 
         public Element ParseElement(string name, string html)
@@ -114,35 +122,10 @@ namespace HtmlTemplater.Parsing.Agility.Services
                 {
                     throw new DuplicateAttributeException(page.Name, att.Line, att.LinePosition, newAtt.Key);
                 }
+                attributes.Add(newAtt);
             }
 
             return attributes;
-        }
-
-        private HtmlNode ReplaceWithValue(Placeholder replaceable, string value, HtmlNode node, Element el, Page page)
-        {
-            var newNode = HtmlNode.CreateNode(el.Html.Replace(replaceable.Full, value));
-            node.ParentNode.ReplaceChild(newNode, node);
-            return newNode;
-        }
-
-        private HtmlNode ReplaceInnerHtml(string placeholder, HtmlNode node, Element el, Page page)
-        {
-            var innerHtml = node.InnerHtml;
-            if (!string.IsNullOrEmpty(innerHtml))
-            {
-                // Replace element placeholder, and use its inner HTML instead of the definition's {{ InnerHtml }} 
-                var newNode = HtmlNode.CreateNode(el.Html.Replace(placeholder, innerHtml));
-                node.ParentNode.ReplaceChild(newNode, node);
-                return newNode;
-            }
-
-            _validator.MissingInnerHtml(page.Name, node.Line, node.LinePosition, el.Name);
-
-            // Replace element placeholder, removing the {{ InnerHtml }} token
-            var newNode2 = HtmlNode.CreateNode(el.Html.Replace(placeholder, string.Empty));
-            node.ParentNode.ReplaceChild(newNode2, node);
-            return newNode2;
         }
 
         private List<Placeholder> GetPlaceholders(string html)
