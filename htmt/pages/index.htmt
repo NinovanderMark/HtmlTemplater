@@ -1,4 +1,121 @@
 <page title="HTML Templater - Documentation">
-	<h1>HTML Templater</h1>
-	<p>This is a placeholder website for the documentation of HTML Templater</p>
+	<section>
+		<h1>HTML Templater</h1>
+		<p>HTML Templater is a static site generator where the templates and content are all straightforward HTML. The user can define custom elements, or redefine existing HTML elements with custom HTML to be used as page templates, or reusable components.</p>
+		<p>The element definitions and their use are all in bog-standard HTML, meaning that developers don't have to learn any other markup language, and that it's flexible enough to do anything that the web can do, both now and in the future.</p>
+		<p>The code for this project can be found on <a href="https://github.com/NinovanderMark/HtmlTemplater">GitHub</a>.</p>
+	</section>
+	
+	<section>
+		<h2>Getting started</h2>
+		<p>Starting out with HTML Templater is relatively straightforward and requires only a manifest file, and one file per page to be generated. A more typical setup will also include files for elements, and a folder for assets such as stylesheets or images. The following folder structure is recommended for most use cases:</p>
+		<ul class='filestructure'>
+			<li>assets</li>
+			<li>elements</li>
+			<li>pages</li>
+			<li class='file'>manifest.json</li>
+		</ul>
+	</section>
+
+	<section>
+		<h3>Manifest file</h3>
+		<p>The starting point for site generation with HTML Templater is the manifest file, which enumerates the custom elements defined for our website, along with the output location of the generated site and optionally the source and destination folder where the assets are stored.</p>
+		<pre class="codeblock">
+{
+  "elements": [
+    "page"
+  ],
+  "outputPath": "../docs",
+  "assets": {
+    "input": "assets",
+    "output": "assets"
+  }
+}</pre>
+		<p>When running the HTML Templater CLI, the path to the manifest file should be supplied, otherwise the tool will look for a <code>manifest.json</code> file in the current folder.</p>
+		
+	</section>
+	
+	<section>
+		<h3>Assets</h3>
+		<p>Assets are treated in the same way as pages, except that they are not parsed in any way. HTML Templater will copy everything from the source folder to the output folder, preserving the directory structure present.</p>
+	</section>
+		
+	<section>
+		<h3>Page files</h3>
+		<p>HTML Templater will iterate over each <code>htmt</code> file in the <code>pages</code> subfolder and generate a corresponding html page in the output folder. If any subfolders are present, HTML Templater will preserve the same folder structure in the output folder.</p>
+	</section>
+	
+	<section>
+		<h3>Element files</h3>
+		<p>Although each <code>htmt</code> page can be a simple HTML page, the value of HTML Templater comes in using custom defined elements. They can be added as plain HTML elements, and HTML Templater will use the elements list from the manifest file to resolve and insert them into the page's output HTML, preserving the HTML structure placed within each custom element, and replace any placeholders.</p>
+		<p>The following page template could be defined as a <code>page</code> element, and added as <code>page.htmt</code> in the elements subfolder:</p>
+		
+		<pre class="codeblock">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;main&gt;{{ InnerHtml }}&lt;/main&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+		
+		<p>The page could simply insert the element, and add any HTML inside of it, and the <code>page</code> element will be replaced with the element definition above</p>
+		<pre class="codeblock">
+&lt;page&gt;
+  &lt;h1>Hello World&lt;/h1&gt;
+&lt;/page&gt;</pre>
+		
+		<p>The resulting page HTML would look like this:</p>
+		<pre class="codeblock">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;main&gt;
+      &lt;h1&gt;Hello World&lt;/h1&gt;
+    &lt;/main&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+	</section>
+	
+	<section>
+		<h3>Attribute replacement</h3>
+		<p>In addition to transplating the inner HTML from the page, it's also possible to provide alternate attributes to be replaced with an elements inclusion. A page template as above would also need some way to provide the page title, which can be done using attribute replacement.</p>
+		<p>The element definition should have the placeholder defined in the following way:</p>
+		<pre class="codeblock">
+&lt;!DOCTYPE html&gt;
+&lt;head&gt;
+  &lt;title&gt;{{ Title }}&lt;/title&gt;
+&lt;/head&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;main&gt;
+      &lt;h1&gt;{{ InnerHtml }}&lt;/h1&gt;
+    &lt;/main&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+		
+		<p>The page would then have to add an attribute to the custom element with the same name as the placeholder:</p>
+		<pre class="codeblock">
+&lt;page title="Welcome to my website"&gt;
+  &lt;h1&gt;Hello World&lt;/h1&gt;
+&lt;/page&gt;</pre>
+		
+		<p>The resulting HTML would then look like this:</p>
+		<pre class="codeblock">
+&lt;!DOCTYPE html&gt;
+&lt;head&gt;
+  &lt;title&gt;Welcome to my website&lt;/title&gt;
+&lt;/head&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;main&gt;
+      &lt;h1&gt;Hello World&lt;/h1&gt;
+    &lt;/main&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+	</section>
+	
+	<section>
+		<h2>About the author</h2>
+		<p>My name is Nino van der Mark, I'm a software developer at 4Dotnet and I like building things that make life a little more fun, and a little bit easier. Feel free to check out my other projects on <a href="https://github.com/NinovanderMark">GitHub</a> or my <a href="https://www.ninovandermark.nl">personal website</a>.</p>
+	</section>
 </page>

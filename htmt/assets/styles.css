@@ -1,4 +1,125 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* 
+	CSS styling for Html Templater documentation
+	License: MIT
+*/
+
+/* Typography */
 html {
 	font-size: 16px;
 	font-family: Arial;
+}
+
+body {
+	font-size: 1rem;
+	line-height: 1.5em;
+}
+
+h1 { font-size: 3.0rem; }
+h2 { font-size: 2.5rem; }
+h3 { font-size: 2.0rem; }
+h4 { font-size: 1.8rem; }
+h5 { font-size: 1.6rem; }
+h6 { font-size: 1.4rem; }
+
+h1, h2, h3, h4, h5, h6 {
+	line-height: 1em;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
+}
+
+h1:first-child,
+h2:first-child,
+h3:first-child,
+h4:first-child,
+h5:first-child,
+h6:first-child {
+	margin-top: auto;
+}
+
+p, ul, pre {
+	margin-bottom: 1em;
+}
+
+p:last-child, ul:last-child, pre:last-child {
+	margin-bottom: auto;
+}
+
+/* Structure */
+main {
+	margin: auto;
+	max-width: 1170px;
+}
+
+section {
+	padding: 30px 15px;
+	background-color: #fff;
+}
+
+/* Utility */
+.filestructure li::before {
+	content: '📂';
+	margin-right: 0.5em;
+}
+
+.filestructure li.file::before {
+	content: '📄';
+}
+
+code, .codeblock {
+	font-family: monospace;
+	line-height: 1em;
+	color: #11a;
+	font-size: 0.9em;
+	padding: 4px;
+	background-color: rgba(128,128,128,0.1);
+}
+
+.codeblock {
+	padding: 10px;
 }
