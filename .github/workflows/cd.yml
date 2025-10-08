@@ -29,12 +29,39 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Deploy website
+      run: dotnet run --no-restore --project HtmlTemplater.CLI -- ../htmt/manifest.json
     - name: Get application version
       id: version
       run: |
         csproj=`cat ./HtmlTemplater.CLI/HtmlTemplater.CLI.csproj`
         version=$(grep -oPm1 "(?<=<Version>)[^<]+" <<< "$csproj")
         echo "version=v$version" >> "$GITHUB_OUTPUT"
+
+  # Updates the documentation website
+  deploy-website:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Deploy website
+        run: dotnet run --project HtmlTemplater.CLI -- ../htmt/manifest.json
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '../docs/'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   # Uses the application version to check if a release already exists for it
   check-release:
