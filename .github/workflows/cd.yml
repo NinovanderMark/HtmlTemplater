@@ -86,7 +86,7 @@ jobs:
     needs: [ build, create-release ]
     strategy:
       matrix: 
-        target: [ linux-arm64, linux-x64 ]
+        target: [ linux-x64 ]
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
@@ -133,7 +133,7 @@ jobs:
         target: ${{ matrix.target }}
       run: |
         cd HtmlTemplater.CLI/bin/Release/publish/$target
-        zip -r ../../../../../$target.zip *
+        tar -czvf ../../../../../$target.zip .
     - name: Upload release artifacts
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
