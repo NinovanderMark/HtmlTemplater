@@ -104,7 +104,7 @@ jobs:
       env: 
         TAG: ${{needs.build.outputs.app-version}}
       run: |
-        echo "New version number specified `TAG`" >> $GITHUB_STEP_SUMMARY
+        echo "New version number specified \\\`TAG\\\`" >> $GITHUB_STEP_SUMMARY
         git config user.email "ninovdmark@gmail.com"
         git config user.name "GitHub Actions Workflow"
         git tag $TAG
