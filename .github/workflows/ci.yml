@@ -55,17 +55,29 @@ jobs:
     - name: Output version
       env: 
         APPVERSION: ${{needs.build.outputs.app-version}}
-      run: echo "New version number specified $APPVERSION" >> $GITHUB_STEP_SUMMARY
+      run: echo "$APPVERSION"
     - name: Check if release already exists
       uses: mukunku/tag-exists-action@v1.6.0
       id: check-release
       with: 
         tag: ${{needs.build.outputs.app-version}}
 
+  # Output new release version
+  create-release:
+    runs-on: ubuntu-latest
+    needs: [ build, check-release ]
+    if: needs.check-release.outputs.exists == 'false'
+    steps:
+    - name: Display release version
+      env: 
+        TAG: ${{needs.build.outputs.app-version}}
+      run: |
+        echo "New version number specified `TAG`" >> $GITHUB_STEP_SUMMARY
+
   # Tests release creation if a new release needs to be made
   build-binaries-linux:
     runs-on: ubuntu-latest
-    needs: [ check-release ]
+    needs: [ create-release ]
     if: needs.check-release.outputs.exists == 'false'
     strategy:
       matrix: 
@@ -89,7 +101,7 @@ jobs:
 
   build-binaries-windows:
     runs-on: windows-latest
-    needs: [ check-release ]
+    needs: [ create-release ]
     if: needs.check-release.outputs.exists == 'false'
     strategy:
       matrix: 
@@ -113,7 +125,7 @@ jobs:
 
   build-binaries-osx:
     runs-on: macos-latest
-    needs: [ check-release ]
+    needs: [ create-release ]
     if: needs.check-release.outputs.exists == 'false'
     strategy:
       matrix: 
