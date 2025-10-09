@@ -7,9 +7,10 @@ on:
   push:
     branches: [ "main" ]
     paths:
+    - '.github/**'
+    - 'htmt/**'
     - 'src/**'
     - 'test/**'
-    - '.github/**'
 
 defaults:
   run:
