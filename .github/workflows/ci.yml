@@ -78,7 +78,6 @@ jobs:
   build-binaries-linux:
     runs-on: ubuntu-latest
     needs: [ create-release ]
-    if: needs.check-release.outputs.exists == 'false'
     strategy:
       matrix: 
         target: [ linux-x64 ]
@@ -102,7 +101,6 @@ jobs:
   build-binaries-windows:
     runs-on: windows-latest
     needs: [ create-release ]
-    if: needs.check-release.outputs.exists == 'false'
     strategy:
       matrix: 
         target: [ win-x64 ]
@@ -126,7 +124,6 @@ jobs:
   build-binaries-osx:
     runs-on: macos-latest
     needs: [ create-release ]
-    if: needs.check-release.outputs.exists == 'false'
     strategy:
       matrix: 
         target: [ osx-arm64, osx-x64 ]
