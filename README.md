@@ -12,7 +12,7 @@ It can be found at [https://htmltemplater.ninovandermark.nl/](https://htmltempla
 
 The source files for this website can be found in the `htmt` folder in this repository.
 
-My [personal website](https://github.com/NinovanderMark/Ninovandermark.github.io) has been built using HTML Templater, and the repository is a decent example on how a typical/minimal setup might look like.
+My [personal website](https://github.com/NinovanderMark/Ninovandermark.github.io) has been built using HTML Templater, and the repository is a decent example on how a typical setup might look like.
 
 # How to build HTML Templater
 Check out the source code and open the `src/HtmlTemplater.sln` file with either Visual Studio or JetBrains Rider. Alternatively, the `dotnet` CLI can be used to build and run the solution. Ensure that the **.NET 8 SDK** is installed.
