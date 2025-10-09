@@ -6,6 +6,10 @@ name: Continuous Integration
 on:
   pull_request:
     branches: [ "main" ]
+    paths:
+    - 'src/**'
+    - 'test/**'
+    - '.github/**'
 
 defaults:
   run:
