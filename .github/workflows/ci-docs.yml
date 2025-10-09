@@ -19,9 +19,6 @@ permissions:
 jobs:
 # Builds the documentation website
   deploy-website:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
