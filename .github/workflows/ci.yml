@@ -71,7 +71,7 @@ jobs:
     - name: Display release version
       env: 
         TAG: ${{needs.build.outputs.app-version}}
-      run: echo "New version number specified \\\`TAG\\\`" >> $GITHUB_STEP_SUMMARY
+      run: echo "New version number specified \`TAG\`" >> $GITHUB_STEP_SUMMARY
 
   # Tests release creation if a new release needs to be made
   build-binaries-linux:
