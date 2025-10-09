@@ -166,7 +166,7 @@ jobs:
         target: ${{ matrix.target }}
       run: |
         cd HtmlTemplater.CLI/bin/Release/publish/$target
-        tar -czvf ../../../../../$target.zip .
+        tar -acvf ../../../../../$target.zip *
     - name: Upload release artifacts
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

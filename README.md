@@ -8,5 +8,7 @@ The documentation is built using HTML Templater, and deployed to GitHub pages.
 
 It can be found at [https://htmltemplater.ninovandermark.nl/](https://htmltemplater.ninovandermark.nl/).
 
+The source files for this website can be found in the `htmt` folder in this repository.
+
 # Contributing
 If there are changes you'd like to see, if you have feedback, or if you found a bug, feel free to create an issue or a PR.
