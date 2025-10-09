@@ -12,11 +12,6 @@ defaults:
     shell: bash
     working-directory: ./src
 
-permissions:
-  contents: read
-  pages: read
-  id-token: read
-
 jobs:
   build:
     runs-on: ubuntu-latest
