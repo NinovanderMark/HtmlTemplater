@@ -111,7 +111,7 @@ namespace HtmlTemplater.CLI
             }
 
             string assetsDestination = Path.Combine(outputPath, "assets");
-            if (!string.IsNullOrWhiteSpace(manifest.Assets?.Output))
+            if ( manifest.Assets?.Output != null )
             {
                 assetsDestination = Path.Combine(outputPath, manifest.Assets.Output);
             }
