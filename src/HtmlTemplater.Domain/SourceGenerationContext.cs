@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using HtmlTemplater.Domain.Dtos;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace HtmlTemplater.CLI
+namespace HtmlTemplater.Domain
 {
     [JsonSourceGenerationOptions(WriteIndented = false)]
     [JsonSerializable(typeof(ManifestDto))]

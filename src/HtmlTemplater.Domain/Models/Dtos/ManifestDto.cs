@@ -1,4 +1,4 @@
-﻿namespace HtmlTemplater.CLI
+﻿namespace HtmlTemplater.Domain.Dtos
 {
     public record ManifestDto
     {

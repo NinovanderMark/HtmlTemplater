@@ -1,5 +1,7 @@
-﻿using HtmlTemplater.Domain.Interfaces;
+﻿using HtmlTemplater.Domain;
+using HtmlTemplater.Domain.Interfaces;
 using HtmlTemplater.Domain.Models;
+using HtmlTemplater.Domain.Services;
 using HtmlTemplater.Parsing.Agility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,7 +41,11 @@ namespace HtmlTemplater.CLI
 
             try
             {
-                return await Run(serviceProvider, manifestPath);
+                var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+                logger.LogInformation("Starting {Application} v{Version}", Name, Version);
+
+                var generator = serviceProvider.GetRequiredService<ISiteGenerator>();
+                return await generator.GenerateFromManifest(manifestPath);
             }
             catch (Exception ex)
             {
@@ -65,142 +71,8 @@ namespace HtmlTemplater.CLI
                     o.SingleLine = true;
                     o.TimestampFormat = "[HH:mm:ss] ";
                 }))
+                .AddSiteGenerator()
                 .AddAgilityParser()
                 .BuildServiceProvider();
-
-        private static async Task<int> Run(IServiceProvider services, string manifestPath)
-        {
-            var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("Starting {Application} v{Version}", Name, Version);
-
-            if ( !File.Exists(manifestPath) )
-            {
-                logger.LogError("Unable to find manifest file at '{ManifestPath}'", manifestPath);
-                return 2;
-            }
-            var serializerOptions = new JsonSerializerOptions()
-            {
-                IncludeFields = true,
-                PropertyNameCaseInsensitive = true,
-                TypeInfoResolver = SourceGenerationContext.Default
-            };
-
-            logger.LogInformation("Reading Manifest file from {ManifestPath}", manifestPath);
-            var manifest = JsonSerializer.Deserialize<ManifestDto>(await File.ReadAllTextAsync(manifestPath), serializerOptions)
-                ?? throw new Exception("Deserializing manifest was unsuccessful");
-
-            string rootFolder = new FileInfo(manifestPath).Directory?.FullName 
-                ?? throw new Exception($"Unable to retrieve path information for {manifestPath}");
-
-            string outputPath = Path.Combine(rootFolder, "out");
-            if ( !string.IsNullOrWhiteSpace(manifest.OutputPath) )
-            {
-                outputPath = Path.Combine(rootFolder, manifest.OutputPath);
-            }
-
-            if ( !Directory.Exists(outputPath) )
-            {
-                logger.LogInformation("Creating output directory at {OutputPath}", outputPath);
-                Directory.CreateDirectory(outputPath);
-            }
-
-            string assetsSource = Path.Combine(rootFolder, "assets");
-            if (!string.IsNullOrWhiteSpace(manifest.Assets?.Input))
-            {
-                assetsSource = Path.Combine(rootFolder, manifest.Assets.Input);
-            }
-
-            string assetsDestination = Path.Combine(outputPath, "assets");
-            if ( manifest.Assets?.Output != null )
-            {
-                assetsDestination = Path.Combine(outputPath, manifest.Assets.Output);
-            }
-
-            logger.LogInformation("Copying assets to {AssetFolder}", assetsDestination);
-            CopyDirectory(assetsSource, assetsDestination, recursive: true);
-
-            var elementFolder = Path.Combine(rootFolder, "elements");
-
-            var parser = services.GetRequiredService<IParser>();
-            logger.LogInformation("Reading elements from {ElementFolder}", elementFolder);
-            foreach (var e in manifest.Elements ?? [])
-            {
-                var elementFile = Path.Combine(elementFolder, $"{e}.htmt");
-                var content = await File.ReadAllTextAsync(elementFile);
-                parser.ParseElement(e, content);
-            }
-
-            var pagesFolder = Path.Combine(rootFolder, "pages");
-            logger.LogInformation("Discovering pages from {PagesFolder}", pagesFolder);
-            var pageFiles = Directory.GetFiles(pagesFolder, "*.htmt", SearchOption.AllDirectories);
-            var pages = new List<Page>();
-
-            logger.LogInformation("Reading content from {PageCount} pages", pageFiles.Length);
-            foreach (var file in pageFiles)
-            {
-                var content = await File.ReadAllTextAsync(file);
-                var page = new Page(Path.GetFileName(file), Path.GetFullPath(file), content);
-                pages.Add(page);
-            }
-
-            var parsedPages = new List<Page>();
-
-            logger.LogInformation("Parsing {PageCount} pages using {ElementCount} known elements", pages.Count, parser.ElementCount);
-            foreach (var page in pages)
-            {
-                parsedPages.Add(parser.ParsePage(page));
-            }
-
-            logger.LogInformation("Writing parsed pages to {OutputPath}", outputPath);
-            foreach (var page in parsedPages)
-            {
-                var relativePath = Path.GetRelativePath(pagesFolder, page.Path);
-                var pageOutputPath = Path.ChangeExtension(Path.Combine(outputPath, relativePath), ".html");
-                if ( File.Exists(pageOutputPath) )
-                {
-                    File.Delete(pageOutputPath);
-                }
-
-                logger.LogInformation("Writing {PagePath}", pageOutputPath);
-                await File.WriteAllTextAsync(pageOutputPath, page.Content);
-            }
-
-            logger.LogInformation("Operation completed");
-
-            return 0;
-        }
-
-        static void CopyDirectory(string sourceDir, string destinationDir, bool recursive)
-        {
-            // Get information about the source directory
-            var dir = new DirectoryInfo(sourceDir);
-
-            // Check if the source directory exists
-            if (!dir.Exists)
-                throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
-
-            // Cache directories before we start copying
-            DirectoryInfo[] dirs = dir.GetDirectories();
-
-            // Create the destination directory
-            Directory.CreateDirectory(destinationDir);
-
-            // Get the files in the source directory and copy to the destination directory
-            foreach (FileInfo file in dir.GetFiles())
-            {
-                string targetFilePath = Path.Combine(destinationDir, file.Name);
-                file.CopyTo(targetFilePath, overwrite: true);
-            }
-
-            // If recursive and copying subdirectories, recursively call this method
-            if (recursive)
-            {
-                foreach (DirectoryInfo subDir in dirs)
-                {
-                    string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
-                    CopyDirectory(subDir.FullName, newDestinationDir, true);
-                }
-            }
-        }
     }
 }
