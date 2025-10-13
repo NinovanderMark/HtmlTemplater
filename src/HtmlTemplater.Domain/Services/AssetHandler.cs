@@ -78,6 +78,11 @@ namespace HtmlTemplater.Domain.Services
                 return true;
             }
 
+            if ( !filter.Contains(Path.PathSeparator) )
+            {
+                path = Path.GetFileName(path);
+            }
+
             string? startsWith = filter.EndsWith('*') ? filter[..^1] : null;
             string? endsWith = filter.StartsWith('*') ? filter[1..] : null;
             if (!string.IsNullOrEmpty(startsWith) && path.StartsWith(startsWith) ||

@@ -52,6 +52,7 @@ namespace HtmlTemplater.Domain.Tests
         [Theory]
         [InlineData(".jpg", "input/manifest.json")]
         [InlineData("*.json", "input/manifest.json.old")]
+        [InlineData("manifest.*", "input/manifest1.json")]
         public void PathMatchesFilter_DoesNotMatch(string path, string filter)
         {
             Assert.False(AssetHandler.PathMatchesFilter(path, filter));
