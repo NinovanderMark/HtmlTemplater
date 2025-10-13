@@ -94,9 +94,15 @@ namespace HtmlTemplater.Domain.Services
             {
                 var relativePath = Path.GetRelativePath(pagesFolder, page.Path);
                 var pageOutputPath = Path.ChangeExtension(Path.Combine(outputPath, relativePath), ".html");
-                _fileSystem.DeleteFileIfExists(pageOutputPath);
+
+                string? parentDirectory = Path.GetDirectoryName(pageOutputPath);
+                if ( parentDirectory != null)
+                {
+                    _fileSystem.EnsureDirectoryExists(parentDirectory);
+                }
 
                 _logger.LogInformation("Writing {PagePath}", pageOutputPath);
+                _fileSystem.DeleteFileIfExists(pageOutputPath);
                 await _fileSystem.WriteAllTextAsync(pageOutputPath, page.Content);
             }
 

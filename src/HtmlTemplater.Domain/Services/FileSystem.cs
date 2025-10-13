@@ -96,7 +96,7 @@ namespace HtmlTemplater.Domain.Services
 
         public void CopyFile(string file, string outpath)
         {
-            File.Copy(file, outpath);
+            File.Copy(file, outpath, true);
         }
     }
 }

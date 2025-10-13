@@ -63,11 +63,17 @@ namespace HtmlTemplater.Domain.Services
 
             foreach (var file in copyable)
             {
-                var relative = Path.GetRelativePath(file, pagesFolder);
-                var outpath = Path.Combine(outputPath, relative);
+                var relative = Path.GetRelativePath(pagesFolder, file);
+                var outfile = Path.Combine(outputPath, relative);
+                string? outFolder = Path.GetDirectoryName(outfile);
 
-                _logger.LogInformation("Copying asset file {AssetFile} to {OutputPath}", file, outpath);
-                _fileSystem.CopyFile(file, outpath);
+                _logger.LogInformation("Copying asset file {AssetFile} to {OutputPath}", file, outfile);
+                if (outFolder != null) 
+                { 
+                    _fileSystem.EnsureDirectoryExists(outFolder); 
+                }
+
+                _fileSystem.CopyFile(file, outfile);
             }
         }
 
