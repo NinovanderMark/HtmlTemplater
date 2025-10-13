@@ -71,7 +71,7 @@ namespace HtmlTemplater.Domain.Services
             }
         }
 
-        public bool PathMatchesFilter(string path, string filter)
+        public static bool PathMatchesFilter(string path, string filter)
         {
             if (filter == "*.*" || filter == ".")
             {
