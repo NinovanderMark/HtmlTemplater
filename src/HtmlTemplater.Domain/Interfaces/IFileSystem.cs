@@ -5,6 +5,7 @@ namespace HtmlTemplater.Domain.Interfaces
     public interface IFileSystem
     {
         void CopyDirectory(string sourceDir, string destinationDir, bool recursive);
+        void CopyFile(string file, string outpath);
         void DeleteFileIfExists(string path);
         void EnsureDirectoryExists(string path);
         bool FileExists(string path);

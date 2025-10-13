@@ -12,7 +12,11 @@ using System.Xml.Linq;
 
 namespace HtmlTemplater.Domain.Services
 {
-    public class SiteGenerator(ILogger<SiteGenerator> _logger, IFileSystem _fileSystem, IParser _parser) : ISiteGenerator
+    public class SiteGenerator(
+        ILogger<SiteGenerator> _logger, 
+        IFileSystem _fileSystem,
+        IAssetHandler _assetHandler,
+        IParser _parser) : ISiteGenerator
     {
         public static readonly string Elements = "elements";
         public static readonly string Pages = "pages";
@@ -43,14 +47,16 @@ namespace HtmlTemplater.Domain.Services
             }
 
             _fileSystem.EnsureDirectoryExists(outputPath);
+            _logger.LogInformation("Parsing assets before copying them to {OutputFolder}", outputPath);
 
+            var pagesFolder = Path.Combine(rootFolder, Pages);
             if (manifest.Assets?.Input == null)
             {
-                CopyAssetsIntermixed(rootFolder, outputPath);
+                _assetHandler.CopyAssetsIntermixed(pagesFolder, outputPath, manifest.Assets ?? new());
             }
             else
             {
-                CopyAssetsDiscreet(rootFolder, outputPath, manifest.Assets);
+                _assetHandler.CopyAssetsDiscreet(rootFolder, outputPath, manifest.Assets);
             }
 
             var elementFolder = Path.Combine(rootFolder, Elements);
@@ -63,7 +69,6 @@ namespace HtmlTemplater.Domain.Services
                 _parser.ParseElement(e, content);
             }
 
-            var pagesFolder = Path.Combine(rootFolder, Pages);
             _logger.LogInformation("Discovering pages from {PagesFolder}", pagesFolder);
             var pageFiles = _fileSystem.GetFiles(pagesFolder, "*.htmt", SearchOption.AllDirectories);
             var pages = new List<Page>();
@@ -98,29 +103,6 @@ namespace HtmlTemplater.Domain.Services
             _logger.LogInformation("Operation completed");
 
             return 0;
-        }
-
-        private void CopyAssetsDiscreet(string rootFolder, string outputPath, AssetsDto assets)
-        {
-            string assetsSource = Path.Combine(rootFolder, "assets");
-            if (!string.IsNullOrWhiteSpace(assets.Input))
-            {
-                assetsSource = Path.Combine(rootFolder, assets.Input);
-            }
-
-            string assetsDestination = Path.Combine(outputPath, "assets");
-            if (assets.Output != null)
-            {
-                assetsDestination = Path.Combine(outputPath, assets.Output);
-            }
-
-            _logger.LogInformation("Copying all assets to {AssetFolder}", assetsDestination);
-            _fileSystem.CopyDirectory(assetsSource, assetsDestination, recursive: true);
-        }
-
-        private void CopyAssetsIntermixed(string rootFolder, string outputPath)
-        {
-            throw new NotImplementedException("Intermixed mode not yet implemented, aborting");
         }
     }
 }

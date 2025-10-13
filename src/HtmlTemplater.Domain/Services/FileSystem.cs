@@ -93,5 +93,10 @@ namespace HtmlTemplater.Domain.Services
         {
             return new FileInfo(path).Directory?.FullName ?? throw new Exception($"Unable to retrieve path information for {path}");
         }
+
+        public void CopyFile(string file, string outpath)
+        {
+            File.Copy(file, outpath);
+        }
     }
 }

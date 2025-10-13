@@ -11,7 +11,8 @@ namespace HtmlTemplater.Domain
         /// </summary>
         public static IServiceCollection AddSiteGenerator(this IServiceCollection services)
         {
-            services.AddTransient<ISiteGenerator, SiteGenerator>();
+            services.AddScoped<ISiteGenerator, SiteGenerator>();
+            services.AddTransient<IAssetHandler, AssetHandler>();
             services.AddTransient<IFileSystem, FileSystem>();
             return services;
         }

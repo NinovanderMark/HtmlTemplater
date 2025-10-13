@@ -11,5 +11,7 @@
     {
         public string? Input { get; init; }
         public string? Output { get; init; }
+        public string[] Include { get; init; } = [];
+        public string[] Exclude { get; init; } = [];
     }
 }
