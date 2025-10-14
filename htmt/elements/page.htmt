@@ -2,10 +2,17 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="/assets/styles.css" type="text/css">
-		<title>{{ Title }}</title>
+		<title>{{ Title }} - HTML Templater</title>
 	</head>
 	<body>
-		<header></header>
+		<header>
+			<nav>
+				<ul>
+					<li><a href="/">Overview</a></li>
+					<li><a href="/reference/">Reference</a></li>
+				</ul>
+			</nav>
+		</header>
 		<main>
 			{{ InnerHtml }}
 		</main>

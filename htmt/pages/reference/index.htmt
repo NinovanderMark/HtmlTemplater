@@ -1,0 +1,65 @@
+<page title="Reference">
+	<section>
+		<h1>Reference documentation</h1>
+		<p>Contents</p>
+		<ol>
+			<li><a href="#manifest">Manifest file</li>
+			<li><a href="#">Element file</li>
+		</ol>
+	</section>
+	
+	<section id="manifest">
+		<h2>Manifest file</h2>
+		<div class="float-break">
+			<div class="float-left">
+				<pre class="codeblock">
+{
+  "elements": [
+    "string"
+  ],
+  "outputPath": "string",
+  "assets": {
+    "input": "string",
+    "output": "string",
+    "include": [
+      "string"
+	],
+	exclude": [
+	  "string"
+	]
+}</pre>
+			</div>
+			
+			<div>
+				<strong class="monospace">elements <code>string[]</code></strong>
+				<p>This array enumerates all custom elements for the given site. For each entry there should be a file in the <code>elements</code> folder with the same name and the <code>htmt</code> extension. For more information on element files, see the section on <a href="#elements">Elements</a></p>
+				
+				<strong class="monospace">outputPath <code>string</code></strong>
+				<p>Path to the output root folder, can be absolute or relative to the location of the manifest file.</p>
+				
+				<strong class="monospace">assets <code>Object</code></strong>
+				<p>Defines how assets are handled by HTML Templater.</p>
+				
+				<strong class="monospace">assets.input <code>string</code></strong>
+				<p>Path to the assets input folder. When specified with a non-whitespace string, all files and (sub)folders in this folder will be copied to the assets output folder. If not specified, assets will be copied from the <code>pages</code> folder and subfolders therein.</p>
+				
+				<strong class="monospace">assets.output <code>string</code></strong>
+				<p>Path to the assets output folder where all assets will be copied to. If not specified, or left empty, assets will be copied to the root of the site's output path.</p>
+				
+				<strong class="monospace">assets.include <code>string[]</code></strong>
+				<p>List of strings against which assets are matched for inclusion. Can be partial paths and supports the use of wildcards to indicate whether a path should begin with a string <code>begin*</code> or ends with a string <code>*end</code>.<p/>
+				<p>When no path separators are used in a filter, all paths where only the filename matches are considered included. When not specified, or left empty, will include all files that do not have a <code>htmt</code> extension.</p>
+				
+				<strong class="monospace">assets.exclude <code>string[]</code></strong>
+				<p>List of strings against which assets are matched for exclusion. Filter matching works the same way as include filters. Takes precedence over include filters, meaning that any included files will be removed if they also match an exclude filter.</p>
+			</div>
+		</div>
+		
+		
+	</section>
+	
+	<section id="elements">
+		<h2>Element file</h2>
+		<p></p>
+	</section>
+</page>

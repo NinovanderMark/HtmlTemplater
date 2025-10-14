@@ -14,8 +14,8 @@ namespace HtmlTemplater.Domain.Services
                 assetsSource = Path.Combine(rootFolder, assets.Input);
             }
 
-            string assetsDestination = Path.Combine(outputPath, "assets");
-            if (assets.Output != null)
+            string assetsDestination = outputPath;
+            if (!string.IsNullOrWhiteSpace(assets.Output))
             {
                 assetsDestination = Path.Combine(outputPath, assets.Output);
             }
