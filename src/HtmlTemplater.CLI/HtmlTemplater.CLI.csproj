@@ -8,7 +8,7 @@
     <PublishAot>true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
     <Version>0.3.0</Version>
-    <AssemblyName>HtmlTemplater-$(Version)</AssemblyName>
+    <AssemblyName>HtmlTemplater</AssemblyName>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 

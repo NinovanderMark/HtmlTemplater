@@ -1,13 +1,13 @@
 <page title="Overview">
 	<section>
-		<h1>HTML Templater</h1>
+		<h1 class="h1">HTML Templater</h1>
 		<p>HTML Templater is a static site generator where the templates and content are all straightforward HTML. The user can define custom elements, or redefine existing HTML elements with custom HTML to be used as page templates, or reusable components.</p>
 		<p>The element definitions and their use are all in bog-standard HTML, meaning that developers don't have to learn any other markup language, and that it's flexible enough to do anything that the web can do, both now and in the future.</p>
 		<p>The code for this project can be found on <a href="https://github.com/NinovanderMark/HtmlTemplater">GitHub</a>.</p>
 	</section>
 	
 	<section>
-		<h2>Getting started</h2>
+		<h2 class="h2">Getting started</h2>
 		<p>To get started with HTML Templater, simply create 2 folders one for the source files, and another where the website will be generated into. Within the source folder, create a folder structure as follows.</p>
 		<ul class='filestructure'>
 			<li>assets</li>
@@ -16,7 +16,7 @@
 			<li class='file'>manifest.json</li>
 		</ul>
 		
-		<h3>Manifest file</h3>
+		<h3 class="h3">Manifest file</h3>
 		<p>The starting point for site generation with HTML Templater is the manifest file, which enumerates the custom elements defined for our website, the location where the website will be generated, and how to handle assets.</p>
 		<p>The following JSON will is enough to get started, where the <code>outputPath</code> indicates the folder where the website should be generated.</p>
 				<pre class="codeblock">
@@ -50,7 +50,7 @@
 
 		<h3>Site generation</h3>
 		<p>Now when HTML Templater is ran, with the path to the <code>manifest.json</code> file as an argument, it will generate a single html page, where the <code>page</code> element has been replaced by its definition from the element file.</p>
-		<p>This relatively basic setup can now easily be extended with additional pages, different custom elements and any choice of static assets. For more detailed information, visit the <a href="/reference.html">reference</a> page.
+		<p>This relatively basic setup can now easily be extended with additional pages, different custom elements and any choice of static assets. For more detailed information, visit the <a href="/documentation">documentation</a> page.
 	</section>
 	
 	<section>

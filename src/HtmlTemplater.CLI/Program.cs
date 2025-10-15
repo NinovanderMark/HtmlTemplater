@@ -25,7 +25,7 @@ namespace HtmlTemplater.CLI
             {
                 if (args[0] == "-v" || args[0] == "--version")
                 {
-                    Console.WriteLine($"{Name} v{Version}");
+                    Console.WriteLine($"v{Version}");
                     return 0;
                 }
 
