@@ -1,0 +1,121 @@
+<page title="Documentation">
+	<section>
+		<h1>HTML Templater documentation</h1>
+		<p>Contents</p>
+		<ol>
+			<li><a href="#cli">HTML Templater CLI</li>
+			<li><a href="#manifest">Manifest file</li>
+			<li><a href="#">Element file</li>
+		</ol>
+	</section>
+	
+	<section id="cli">
+		<h2>HTML Templater CLI</h2>
+		<p>The HTML Templater CLI tool is a very simple command-line application that facilitates static site generation. It's available for most platforms and can easily be integrated into existing toolchains, or function as the sole driver for any static website, such as this very website.</p>
+		<h3>Usage</h3>
+		<code>HtmlTemplater &lt;path-to-manifest&gt;</code>
+		<p>Alternatively the <code>-v</code> or <code>--version</code> argument can be provided instead, causing the program to output its version and exit cleanly.</p>
+	</section>
+	
+	<section id="manifest">
+		<h2>Manifest file</h2>
+		<p>This file contains configuration for running HTML Templater. A path to this file must be supplied as an argument when running the HTML Templater CLI. The manifest file's parent folder will be considered the root for all relative paths for the duration of the run, which includes the <code>pages</code> and <code>elements</code> folders.</p>
+		
+		<div class="float-break">
+			<div class="float-left">
+				<pre class="codeblock">
+{
+  "elements": [
+    "string"
+  ],
+  "outputPath": "string",
+  "assets": {
+    "input": "string",
+    "output": "string",
+    "include": [
+      "string"
+	],
+	exclude": [
+	  "string"
+	]
+}</pre>
+			</div>
+			
+			<div>			
+				<strong class="monospace">elements <code>string[]</code></strong>
+				<p>This array enumerates all custom elements for the given site. For each entry there should be a file in the <code>elements</code> folder with the same name and the <code>htmt</code> extension. For more information on element files, see the section on <a href="#elements">Elements</a></p>
+				
+				<strong class="monospace">outputPath <code>string</code></strong>
+				<p>Path to the output root folder, where all generated files will be placed. Can be absolute or relative to the location of the manifest file.</p>
+				
+				<strong class="monospace">assets <code>Object</code></strong>
+				<p>Defines how assets are handled by HTML Templater.</p>
+				
+				<strong class="monospace">assets.input <code>string</code></strong>
+				<p>Path to the assets input folder. When specified with a non-whitespace string, all files and (sub)folders in this folder will be copied to the assets output folder. If not specified, assets will be copied from the <code>pages</code> folder and subfolders therein.</p>
+				
+				<strong class="monospace">assets.output <code>string</code></strong>
+				<p>Path to the assets output folder where all assets will be copied to. If not specified, or left empty, assets will be copied to the root of the site's output path.</p>
+				
+				<strong class="monospace">assets.include <code>string[]</code></strong>
+				<p>List of strings against which assets are matched for inclusion. Can be partial paths and supports the use of wildcards to indicate whether a path should begin with a string <code>begin*</code> or ends with a string <code>*end</code>.<p/>
+				<p>When no path separators are used in a filter, all paths where only the filename matches are considered included. When not specified, or left empty, will include all files that do not have a <code>htmt</code> extension.</p>
+				
+				<strong class="monospace">assets.exclude <code>string[]</code></strong>
+				<p>List of strings against which assets are matched for exclusion. Filter matching works the same way as include filters. Takes precedence over include filters, meaning that any included files will be removed if they also match an exclude filter.</p>
+			</div>
+		</div>
+		
+		
+	</section>
+	
+	<section id="elements">
+		<h2>Element file</h2>
+		<p>Each element defined in the manifest file must have a corresponding element <code>htmt</code> file. This file contains all markup to be inserted wherever an element is used inside a page.</p>
+		
+		<h3>Reserved placeholders</h3>
+		<p>These placeholders perform specific functions within an element definition, and can therefore not be used as attribute placeholders.</p>
+		<p class="warn"><strong>Note on stability:</strong> This list may expand to include additional placeholders, so be sure to revisit this section when upgrading your version of HTMLTemplater prior to the first stable 1.0 release. After the 1.0, any changes to reserved placeholders will be considered a breaking change and will only be introduced in major version updates.</p>
+		
+		<strong>InnerHtml</strong>
+		<p>The <code>{{ InnerHtml }}</code> placeholder will be replaced with the inner HTML inside the element tags on the page.</p>
+		<em>Example</em>
+		<pre class="codeblock">
+&lt;html&gt;
+  &lt;body&gt;
+    {{ InnerHtml }}
+  &lt;/body&gt;
+&lt;/html&gt;<span class="title">elements/page.htmt</span></pre>
+
+<pre class="codeblock">
+&lt;page&gt;
+  &lt;h1&gt;Hello World&lt;/h1&gt;
+&lt;/page&gt;<span class="title">pages/index.htmt</span></pre>
+
+<pre class="codeblock">
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Hello World&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;<span class="title">output/index.html</span></pre>
+		
+		<h3>Attribute placeholders</h3>
+		<p>Attributes on the element tags can be used to insert text values anywhere in the element definition, using a placeholder whose name matches the attribute.</p>
+		<em>Example</em>
+		<pre class="codeblock">
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;{{ Title }}&lt;/title&gt;
+  &lt;/head&gt;
+&lt;/html&gt;<span class="title">elements/page.htmt</span></pre>
+
+<pre class="codeblock">&lt;page title="Hello World"&gt;&lt;/page&gt;<span class="title">pages/index.htmt</span></pre>
+
+<pre class="codeblock">
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Hello World&lt;/title&gt;
+  &lt;/head&gt;
+&lt;/html&gt;<span class="title">output/index.html</span></pre>
+	</section>
+</page>

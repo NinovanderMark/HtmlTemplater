@@ -1,4 +1,4 @@
-﻿namespace HtmlTemplater.CLI
+﻿namespace HtmlTemplater.Domain.Dtos
 {
     public record ManifestDto
     {
@@ -11,5 +11,7 @@
     {
         public string? Input { get; init; }
         public string? Output { get; init; }
+        public string[] Include { get; init; } = [];
+        public string[] Exclude { get; init; } = [];
     }
 }

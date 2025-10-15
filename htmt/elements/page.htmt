@@ -2,12 +2,25 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="/assets/styles.css" type="text/css">
-		<title>{{ Title }}</title>
+		<meta content="width=device-width, initial-scale=1" name="viewport" />
+		<title>{{ Title }} - HTML Templater</title>
 	</head>
 	<body>
-		<header></header>
-		<main>
+		<header>
+			<nav class="container">
+				<ul>
+					<li><a href="/">Overview</a></li>
+					<li><a href="/documentation/">Documentation</a></li>
+				</ul>
+			</nav>
+		</header>
+		
+		<main class="container">
 			{{ InnerHtml }}
 		</main>
+		
+		<footer>
+			<div class="container">Generated with <a href="https://github.com/NinovanderMark/HtmlTemplater">HTML Templater</a> - Hosted on GitHub pages</div>
+		</footer>
 	</body>
 </html>
