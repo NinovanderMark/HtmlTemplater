@@ -20,7 +20,8 @@ namespace HtmlTemplater.Domain.Tests
             var filesystem = Substitute.For<IFileSystem>();
             var assethandler = Substitute.For<IAssetHandler>();
             var parser = Substitute.For<IParser>();
-            var sut = new SiteGenerator(logger, filesystem, assethandler, parser);
+            var repository = Substitute.For<IElementRepository>();
+            var sut = new SiteGenerator(logger, filesystem, assethandler, parser, repository);
 
             var manifestDto = new ManifestDto();
 
@@ -44,7 +45,8 @@ namespace HtmlTemplater.Domain.Tests
             var filesystem = Substitute.For<IFileSystem>();
             var assethandler = Substitute.For<IAssetHandler>();
             var parser = Substitute.For<IParser>();
-            var sut = new SiteGenerator(logger, filesystem, assethandler, parser);
+            var repository = Substitute.For<IElementRepository>();
+            var sut = new SiteGenerator(logger, filesystem, assethandler, parser, repository);
 
             var manifestDto = new ManifestDto() { Assets = new() { Input = "assets" } };
 
@@ -70,7 +72,8 @@ namespace HtmlTemplater.Domain.Tests
             var filesystem = Substitute.For<IFileSystem>();
             var assethandler = Substitute.For<IAssetHandler>();
             var parser = Substitute.For<IParser>();
-            var sut = new SiteGenerator(logger, filesystem, assethandler, parser);
+            var repository = Substitute.For<IElementRepository>();
+            var sut = new SiteGenerator(logger, filesystem, assethandler, parser, repository);
 
             var manifestDto = new ManifestDto();
 

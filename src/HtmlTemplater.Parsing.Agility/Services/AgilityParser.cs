@@ -6,12 +6,8 @@ using HtmlTemplater.Parsing.Agility.Interfaces;
 
 namespace HtmlTemplater.Parsing.Agility.Services
 {
-    public class AgilityParser(IParseValidator _validator) : IParser
+    public class AgilityParser(IParseValidator _validator, IElementRepository _elementRepository) : IParser
     {
-        public int ElementCount { get => _elements.Count; } 
-
-        private readonly SynchronizedCollection<Element> _elements = [];
-
         /// <summary>
         /// Parses the page, replacing element placeholders with their definitions.
         /// </summary>
@@ -23,14 +19,15 @@ namespace HtmlTemplater.Parsing.Agility.Services
             document.LoadHtml(page.Content);
 
             // Replace element placeholders with element definitions
-            foreach (var el in _elements)
+            foreach (var el in _elementRepository.KnownElements)
             {
-                var nodes = document.DocumentNode.SelectNodes(el.Name.ToLower()) ?? new HtmlNodeCollection(document.DocumentNode);
+                var nodes = document.DocumentNode.SelectNodes(el.ToLower()) ?? new HtmlNodeCollection(document.DocumentNode);
                 foreach(var node in nodes)
                 {
                     try
                     {
-                        var newNode = ParseNode(node, el, page);
+                        var element = _elementRepository.GetRequired(el);
+                        var newNode = ParseNode(node, element, page);
                         node.ParentNode.ReplaceChild(newNode, node);
                     }
                     catch (Exception ex)
@@ -94,18 +91,6 @@ namespace HtmlTemplater.Parsing.Agility.Services
             }
 
             return workNode;
-        }
-
-        public Element ParseElement(string name, string html)
-        {
-            if ( _elements.Any(e => e.Name == name) )
-            {
-                throw new Exception($"Attempting to parse element '{name}', but element was already parsed!");
-            }
-
-            var element = new Element(name, html);
-            _elements.Add(element);
-            return element;
         }
         
         private List<Attribute> GetAttributes(Page page, HtmlNode node)

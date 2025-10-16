@@ -16,7 +16,8 @@ namespace HtmlTemplater.Domain.Services
         ILogger<SiteGenerator> _logger, 
         IFileSystem _fileSystem,
         IAssetHandler _assetHandler,
-        IParser _parser) : ISiteGenerator
+        IParser _parser,
+        IElementRepository _repository) : ISiteGenerator
     {
         public static readonly string Elements = "elements";
         public static readonly string Pages = "pages";
@@ -59,6 +60,15 @@ namespace HtmlTemplater.Domain.Services
                 _assetHandler.CopyAssetsDiscreet(rootFolder, outputPath, manifest.Assets);
             }
 
+            await ParseElements(rootFolder, manifest);
+            await ParsePages(pagesFolder, outputPath);
+
+            _logger.LogInformation("Operation completed successfully");
+            return 0;
+        }
+
+        private async Task ParseElements(string rootFolder, ManifestDto manifest)
+        {
             var elementFolder = Path.Combine(rootFolder, Elements);
 
             _logger.LogInformation("Reading elements from {ElementFolder}", elementFolder);
@@ -66,9 +76,12 @@ namespace HtmlTemplater.Domain.Services
             {
                 var elementFile = Path.Combine(elementFolder, $"{e}.htmt");
                 var content = await _fileSystem.ReadAllTextAsync(elementFile);
-                _parser.ParseElement(e, content);
+                _repository.Add(e, content);
             }
+        }
 
+        private async Task ParsePages(string pagesFolder, string outputPath)
+        {
             _logger.LogInformation("Discovering pages from {PagesFolder}", pagesFolder);
             var pageFiles = _fileSystem.GetFiles(pagesFolder, "*.htmt", SearchOption.AllDirectories);
             var pages = new List<Page>();
@@ -83,7 +96,7 @@ namespace HtmlTemplater.Domain.Services
 
             var parsedPages = new List<Page>();
 
-            _logger.LogInformation("Parsing {PageCount} pages using {ElementCount} known elements", pages.Count, _parser.ElementCount);
+            _logger.LogInformation("Parsing {PageCount} pages using {ElementCount} known elements", pages.Count, _repository.KnownElements.Count);
             foreach (var page in pages)
             {
                 parsedPages.Add(_parser.ParsePage(page));
@@ -96,7 +109,7 @@ namespace HtmlTemplater.Domain.Services
                 var pageOutputPath = Path.ChangeExtension(Path.Combine(outputPath, relativePath), ".html");
 
                 string? parentDirectory = Path.GetDirectoryName(pageOutputPath);
-                if ( parentDirectory != null)
+                if (parentDirectory != null)
                 {
                     _fileSystem.EnsureDirectoryExists(parentDirectory);
                 }
@@ -104,11 +117,7 @@ namespace HtmlTemplater.Domain.Services
                 _logger.LogInformation("Writing {PagePath}", pageOutputPath);
                 _fileSystem.DeleteFileIfExists(pageOutputPath);
                 await _fileSystem.WriteAllTextAsync(pageOutputPath, page.Content);
-            }
-
-            _logger.LogInformation("Operation completed");
-
-            return 0;
+            }            
         }
     }
 }
