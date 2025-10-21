@@ -13,6 +13,7 @@ namespace HtmlTemplater.Parsing.Agility
         public static IServiceCollection AddAgilityParser(this IServiceCollection services)
         {
             services.AddTransient<IParser, AgilityParser>();
+            services.AddTransient<INodeParser, AgilityNodeParser>();
             services.AddSingleton<IElementRepository, AgilityElementRepository>();
             services.AddTransient<IParseValidator, ParseValidator>();
             return services;
